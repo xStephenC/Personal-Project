@@ -1,0 +1,725 @@
+TEST 1 AUTOR
+-clasa autor CONTINE lista
+-toString, get/set, incarcare in list<autor>
+-referinte metode
+-try-catch
+-ENUM
+
+
+
+
+package ex_carte;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+enum tip_opera{beletristica, horror, comedie}
+
+public class MainApp {
+
+
+    public static void main(String[] args)
+    {
+        tip_opera opera = null;
+        Autor aut = null;
+        Carte carte;
+        List<Autor> autori=new ArrayList<Autor>();
+
+        try{
+            File fis=new File("C:\\Users\\alexa\\OneDrive\\Desktop\\Carti\\Autor.txt");
+            Scanner scan=new Scanner(fis);
+            while(scan.hasNext())
+            {
+                List<Carte> carti=new ArrayList<Carte>();
+                String data=scan.nextLine();
+                String elem[]=data.split(" ");
+
+            try{
+                File fis_carti=new File("C:\\Users\\alexa\\OneDrive\\Desktop\\Carti\\"+elem[0]+".txt");
+                Scanner scan_carti=new Scanner(fis_carti);
+                while(scan_carti.hasNext())
+                {
+                    String data_carti=scan_carti.nextLine();
+                    String elem_carti[]=data_carti.split(" ");
+
+                    carte=new Carte(elem_carti[0],Integer.parseInt(elem_carti[1]),Boolean.parseBoolean(elem_carti[2]));
+                    carti.add(carte);
+                }
+            }catch(FileNotFoundException e){
+                System.out.println("Eroare!");
+                e.printStackTrace();
+                }
+
+
+                switch (elem[1].toLowerCase()) {
+                    case "beletristica":
+                        opera = tip_opera.beletristica;
+                        break;
+                    case "horror":
+                        opera = tip_opera.horror;
+                        break;
+                    case "comedie":
+                        opera = tip_opera.comedie;
+                        break;
+                    default:
+                        System.out.println("Invalid opera value: " + elem[1]);
+
+                        break;
+                }
+
+                aut=new Autor(elem[0],opera , LocalDate.parse(elem[2]),carti);
+                autori.add(aut);
+
+            }
+        }catch(FileNotFoundException e){
+            System.out.println("Eroare!");
+            e.printStackTrace();
+        }
+
+        int nr=0;
+        boolean ok=false;
+        while(!ok) {
+            try {
+                System.out.println("Dati nr carti:");
+                Scanner scan = new Scanner(System.in);
+                nr = scan.nextInt();
+                if (nr != (int) nr) {   //verif exceptie ca sa fie nr
+                    throw new ArithmeticException();
+                }
+                else{ok=true;
+                for(Autor a :autori){
+                    a.getCarti(nr); //afisam primele n carti de la primul autor
+                    break;
+                }
+                }
+            } catch (Exception e) {
+                System.out.println("Eroare nr invalid,reintroduceti.");
+            }
+        }
+
+        //afisarea tuturor autorilor+cartile lor(referinta)
+       autori.forEach(System.out::println);
+    }
+}
+
+
+
+
+package ex_carte;
+
+import java.time.LocalDate;
+import java.util.List;
+
+public class Autor {
+
+    private tip_opera opera;
+
+
+    private String nume;
+    private LocalDate data_nastere;
+    private List<Carte> carti;
+
+
+    public Autor(String nume, tip_opera opera,LocalDate data_nastere,List<Carte> carti)
+    {
+        this.nume=nume;
+        this.data_nastere=data_nastere;
+        this.opera=opera;
+        this.carti=carti;
+    }
+
+    public void getCarti(int n)
+    {
+        System.out.println( this.nume+" "+this.data_nastere+" "+this.opera+" "+'\n');
+            for(Carte car: carti)
+            {
+                System.out.println(car);
+                n--;
+                if(n==0)
+                {
+                    break;
+                }
+            }
+
+
+
+    }
+
+    public String toString()
+    {
+
+        for(Carte c : carti)
+        {
+            System.out.println(c);
+        }
+        return this.nume+" "+this.data_nastere+" "+this.opera+" "+'\n';
+    }
+
+}
+
+
+
+
+package ex_carte;
+
+public class Carte {
+    private String titlu;
+    private int nr_pag;
+    private boolean este_audiobook;
+
+    public Carte(String titlu,int nr_pag,boolean este_audiobook)
+    {
+        this.titlu=titlu;
+        this.nr_pag=nr_pag;
+        this.este_audiobook=este_audiobook;
+    }
+
+    public String toString()
+    {
+        return this.titlu+" "+this.nr_pag+" "+this.este_audiobook;
+    }
+
+
+}
+
+
+
+
+
+------------------------------------------------------------------------------------------------------
+ TEST 2 ANIMAL
+-clasa ABSTARCT
+-get/set, toString, List
+-referinta metode
+-ENUM
+-try-catch
+
+
+
+
+package ex_animal;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+enum talia{mare,medie,mica}
+
+public class MainApp {
+    public static void main(String[]arg)
+    {
+        talia tal=null;
+        Animal an;
+        Caine ham;
+        Pisica miau;
+        List<Animal> lista = new ArrayList<Animal>();
+
+        try {
+            File fis = new File("C:\\Users\\alexa\\OneDrive\\Desktop\\animale.txt");
+            Scanner scan = new Scanner(fis);
+            while(scan.hasNext())
+            {
+                String data=scan.nextLine();
+                String[] elem=data.split(",");
+                int lun=elem.length;
+
+                switch(elem[3].toUpperCase())
+                {
+                    case "MARE":
+                        tal=talia.mare;
+                        break;
+                    case "MEDIE":
+                        tal=talia.medie;
+                        break;
+                    case "MICA":
+                        tal=talia.mica;
+                        break;
+                    default:
+                        System.out.println("Invalid talia value: " + elem[3]);
+                        break;
+                }
+
+
+                if(lun==6)
+                {
+                    miau=new Pisica(elem[0],Integer.parseInt(elem[1]), LocalDate.parse(elem[2]),tal,Integer.parseInt(elem[4]),elem[5]);
+                    lista.add(miau);
+                }
+                else if(lun==5)
+                {
+                    ham=new Caine(elem[0],Integer.parseInt(elem[1]), LocalDate.parse(elem[2]),tal,Boolean.parseBoolean(elem[4]));
+                    lista.add(ham);
+                }
+            }
+        }catch(FileNotFoundException e){
+            System.out.println("Eroare!");
+            e.printStackTrace();
+        }
+
+//        for(Animal a:lista)
+//        {
+//            System.out.println(a);
+//        }
+
+      lista.forEach(System.out::println);//Af cu referinta
+
+//        lista
+//                .stream()
+//                .sorted((a,b)->a.getGreutate())
+
+    }
+}
+
+
+
+
+package ex_animal;
+
+import java.time.LocalDate;
+
+abstract class Animal {
+    protected String nume;
+    protected int inaltime;
+    protected LocalDate data_nasterii;
+    protected talia talie;
+
+    public Animal(String nume,int inaltime,LocalDate data_nasterii,talia talie)
+    {
+      this.nume=nume;
+      this.inaltime=inaltime;
+      this.data_nasterii=data_nasterii;
+      this.talie=talie;
+    }
+
+abstract int getGreutate();
+}
+
+
+
+package ex_animal;
+
+import java.time.LocalDate;
+
+public class Caine extends Animal{
+
+    private boolean esteAdoptat;
+
+    public Caine(String nume, int inaltime, LocalDate data_nasterii,talia talie,boolean esteAdoptat)
+    {
+        super(nume,inaltime,data_nasterii,talie);
+        this.esteAdoptat=esteAdoptat;
+    }
+
+    public String toString()
+    {
+        return nume+" "+inaltime+" "+data_nasterii+" "+talie+" "+esteAdoptat;
+    }
+
+    public int getGreutate() {
+        return 0;
+    }
+}
+
+
+
+
+package ex_animal;
+
+import java.time.LocalDate;
+
+public class Pisica extends Animal{
+    private int greutate;
+    private String rasa;
+
+    public Pisica(String nume, int inaltime, LocalDate data_nasterii,talia talie,int greutate, String rasa)
+    {
+        super(nume,inaltime,data_nasterii,talie);
+        this.greutate=greutate;
+        this.rasa=rasa;
+    }
+
+    public String toString()
+    {
+        return nume+" "+inaltime+" "+data_nasterii+" "+talie+" "+greutate+" "+rasa;
+    }
+
+    public int getGreutate() {
+        return greutate;
+    }
+}
+
+
+
+
+
+------------------------------------------------------------------------------------------------------
+ TEST 3 PERSOANA(ANGAJAT)
+-ABSTRACT
+-toString, get, set
+-CITIRE fisier 
+-VECTOR
+-try-catch
+
+
+
+package Prblm1;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.time.LocalDate;
+import java.util.Scanner;
+
+public class MainApp {
+   public static void main(String[] args){
+       Persoana[] persoane=new Persoana[10];
+       int cont=0;
+       try {
+           Angajat ang;
+           Somer som;
+
+
+           File file = new File("C:\\Users\\alexa\\OneDrive\\Desktop\\Sub1.txt");
+           Scanner scan = new Scanner(file);
+           while (scan.hasNext())
+           {
+            String data=scan.nextLine();
+            String[] elem=data.split(" ");
+            int nr_elem=elem.length;
+
+            if(nr_elem==4) {
+                ang = new Angajat(elem[0], Integer.parseInt(elem[1]), Integer.parseInt(elem[2]), Integer.parseInt(elem[3]));
+                persoane[cont]=ang;
+                cont++;
+            }
+            else if(nr_elem==3){
+                som = new Somer(elem[0], Integer.parseInt(elem[1]), LocalDate.parse(elem[2]));
+                persoane[cont] = som;
+                cont++;
+            }
+           }
+
+           scan.close();
+       }catch(FileNotFoundException e){
+           System.out.println("Eroare.");
+           e.printStackTrace();
+       }
+
+       for(Persoana i : persoane)
+       {
+           System.out.println(i);
+       }
+
+
+       int vech_tast=0;
+       boolean ok=false;
+      while(!ok) {
+          try {
+              System.out.println("Dati vechimea:");
+              Scanner scan = new Scanner(System.in);
+              vech_tast = scan.nextInt();
+              if (vech_tast != (int) vech_tast) {
+                  throw new ArithmeticException();
+              }
+              else{ok=true;}
+          } catch (Exception e) {
+              System.out.println("Eroare nr invalid,reintroduceti.");
+          }
+      }
+       for(int i=0;i<cont;i++)
+       {
+           if(vech_tast<persoane[i].getVechime())
+           {
+               System.out.println("Angajatul cu vechimea mai mare:");
+               System.out.print(persoane[i]);
+           }    
+       }
+   }
+}
+
+
+
+package Prblm1;
+
+abstract class Persoana {
+    private String nume;
+    private int varsta;
+
+    public Persoana(String nume,int varsta)
+    {
+        this.nume=nume;
+        this.varsta=varsta;
+
+    }
+    public String toString()
+    {
+        return nume+" "+varsta+" ";
+    }
+
+    abstract int getVechime();
+
+}
+
+
+
+package Prblm1;
+
+public class Angajat extends Persoana {
+    private int salar;
+    private int vechime;
+
+    public Angajat(String nume,int varsta,int salar,int vechime)
+    {
+        super(nume,varsta);
+        this.salar=salar;
+        this.vechime=vechime;
+    }
+
+    public String toString()
+    {
+        return super.toString()+salar+" "+vechime;
+    }
+
+    public int getVechime()
+    {
+
+        return this.vechime;
+    }
+
+}
+ 
+
+
+package Prblm1;
+
+import java.time.LocalDate;
+
+public class Somer extends Persoana {
+
+    private LocalDate data_somaj;
+
+    public Somer(String nume,int varsta,LocalDate data_somaj)
+    {
+        super(nume,varsta);
+        this.data_somaj=data_somaj;
+    }
+
+    public String toString()
+    {
+        return super.toString()+" "+data_somaj;
+    }
+    public int getVechime()
+    {
+        return 0;
+    }
+
+}
+
+
+
+------------------------------------------------------------------------------------------------------
+
+
+
+TEST 4 PRODUSE
+-LIST
+-toString, get, set
+-CITIRE fisier
+-SCRIERE fisier
+-STERGERE lista
+-afisare MINIM
+
+
+
+package ex2;
+
+
+import java.io.IOException;
+import javax.swing.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.Writer;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Iterator;
+
+public class MainApp {
+
+public static void main(String[] args){
+    List<Produs> produse=new ArrayList<Produs>();
+    try {
+        File file = new File("C:\\Users\\alexa\\OneDrive\\Desktop\\produse.csv.txt");
+        Scanner scan = new Scanner(file);
+        while(scan.hasNextLine())
+        {
+            String str=scan.nextLine();
+            String[] data=str.split(",");
+            Produs prod=new Produs(data[0],Float.parseFloat(data[1]), Integer.parseInt(data[2]), LocalDate.parse(data[3]));
+            produse.add(prod);
+        }
+    }
+    catch(FileNotFoundException e)
+    {
+        System.out.println("eroare.");
+        e.printStackTrace();
+    }
+
+
+    do{ System.out.println("1.afișarea tuturor produselor din colecția List");
+        System.out.println("2.afișarea produselor expirate");
+        System.out.println("3.vânzarea unui produs");
+        System.out.println("4.afișarea produselor cu prețul minim");
+        System.out.println("5.salvarea produselor");
+        System.out.println("Dati optiunea:");
+        Scanner scann = new Scanner(System.in);
+        int opt=scann.nextInt();
+        System.out.println();
+        switch(opt)
+        {
+            case 1:
+                for(Produs i: produse)
+            {
+                System.out.println(i);
+            }
+                break;
+
+            case 2:
+                for(Produs i:produse)
+            {
+                if(i.getData_exp().compareTo(LocalDate.now())<0)
+                {
+                    System.out.println("Produs expirat: "+i);
+                }
+            }
+                break;
+
+            case 3:
+                scann.nextLine();
+                System.out.println("Introduceți produsul dorit:");
+                String num_prod = scann.nextLine();
+                Iterator <Produs> iterator = produse.iterator();
+
+                while (iterator.hasNext()) {
+                    Produs i = iterator.next();
+                    if (i.getDenumire().equals(num_prod)) {
+                        if (i.getCantitate() <= 1) {
+                            iterator.remove(); // Safely remove the item
+                        } else {
+                            i.decreaseCantitate();
+                        }
+                    }
+                }
+                break;
+            case 4:
+                System.out.println("Minimele sunt:");
+                float min=produse.get(0).getPret();
+                for(int i=1;i<produse.size();i++)
+                {
+                    if(produse.get(i).getPret()<min)
+                    {
+                        min=produse.get(i).getPret();
+                    }
+                }
+                for(Produs i:produse)
+                {
+                    if(i.getPret()==min)
+                    {
+                        System.out.println(i);
+                    }
+                }
+
+                break;
+
+            case 5:
+                try{
+                    int cant;
+
+                    FileWriter writer=new FileWriter("C:\\Users\\alexa\\OneDrive\\Desktop\\produse_out.txt");
+                    System.out.println("Dati cantitatea:");
+                    Scanner scan=new Scanner(System.in);
+                    cant=scan.nextInt();
+
+                    for(Produs i:produse)
+                    {
+                        if(cant>i.getCantitate())
+                        {
+                            writer.write(i.toString());
+                        }
+                    }
+                    writer.close();
+                }
+                catch(IOException e){
+                e.printStackTrace();
+            }
+                break;
+
+            default:System.out.println("Dati alta optiune.");
+                break;
+        }
+    }while(true);
+
+ }
+}
+
+
+package ex2;
+
+import java.time.LocalDate;
+
+public class Produs {
+    private String denumire;
+    private float pret;
+    private int cantitate;
+
+    LocalDate data_exp;
+    public Produs(String denumire,float pret,int cantitate,LocalDate data_exp)
+    {
+        this.cantitate=cantitate;
+        this.denumire=denumire;
+        this.pret=pret;
+        this.data_exp=data_exp;
+    }
+
+    public String toString()
+    {
+        return denumire+" "+pret+" "+cantitate+" "+data_exp;
+    }
+
+    public LocalDate getData_exp()
+    {
+        return data_exp;
+    }
+
+    public String getDenumire()
+    {
+        return denumire;
+    }
+
+    public int getCantitate()
+    {
+        return cantitate;
+    }
+
+    public void decreaseCantitate()
+    {
+        this.cantitate--;
+    }
+
+    public float getPret()
+    {
+        return this.pret;
+    }
+
+
+
+
+}
